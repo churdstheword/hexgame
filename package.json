@@ -1,0 +1,16 @@
+{
+    "name": "hexgame",
+    "version": "0.1.0",
+    "description": "A Hex based game.",
+    "email": "churdstheword@gmail.com",
+    "scripts": {
+        "start": "http-server ./ --proxy http://localhost:8080",
+        "dev": "webpack --mode development --devtool source-map",
+        "build": "webpack --mode production"
+    },
+    "devDependencies": {
+        "lodash": "^4.17.21",
+        "webpack": "^5.35.1",
+        "webpack-cli": "^4.6.0"
+    }
+}
