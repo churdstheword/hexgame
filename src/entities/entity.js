@@ -1,3 +1,5 @@
+import Vector from "../utils/Vector";
+
 /**
  * Abstract Class Entity
  */
@@ -7,6 +9,13 @@ export default class Entity {
             throw new Error("Abstract classes can't be instantiated.")
         }
         this.position = position;
+
+        this.state = {
+            position: position,
+            velocity: new Vector(0,0),
+            acceleration: new Vector(0,0),
+        }
+
     }
 
     update(state) {

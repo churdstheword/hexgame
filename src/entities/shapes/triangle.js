@@ -1,3 +1,4 @@
+import Vector from "../../utils/Vector";
 import Polygon from "./polygon";
 
 /**
@@ -12,6 +13,10 @@ export default class Triangle extends Polygon {
 
     update(state) {
         this.θ = (this.θ + (Math.PI / 30)) % (2 * Math.PI);
+        this.r = 30 + 15 * Math.sin((360 / 60) * (state.client.frameCount % 60) * (Math.PI / 180));
+        this.position = this.position.add(
+            new Vector(2 * Math.sin((state.client.frameCount % 360) * (Math.PI / 180)), 0)
+        )
     }
 
     draw(ctx) {

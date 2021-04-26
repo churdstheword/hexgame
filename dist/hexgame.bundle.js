@@ -149,6 +149,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Entity)
 /* harmony export */ });
+/* harmony import */ var _utils_Vector__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/Vector */ "./src/utils/Vector.js");
+
+
 /**
  * Abstract Class Entity
  */
@@ -158,6 +161,13 @@ class Entity {
             throw new Error("Abstract classes can't be instantiated.")
         }
         this.position = position;
+
+        this.state = {
+            position: position,
+            velocity: new _utils_Vector__WEBPACK_IMPORTED_MODULE_0__.default(0,0),
+            acceleration: new _utils_Vector__WEBPACK_IMPORTED_MODULE_0__.default(0,0),
+        }
+
     }
 
     update(state) {
@@ -308,13 +318,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Triangle)
 /* harmony export */ });
-/* harmony import */ var _polygon__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./polygon */ "./src/entities/shapes/polygon.js");
+/* harmony import */ var _utils_Vector__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../utils/Vector */ "./src/utils/Vector.js");
+/* harmony import */ var _polygon__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./polygon */ "./src/entities/shapes/polygon.js");
+
 
 
 /**
  * 
  */
-class Triangle extends _polygon__WEBPACK_IMPORTED_MODULE_0__.default {
+class Triangle extends _polygon__WEBPACK_IMPORTED_MODULE_1__.default {
 
     constructor(position, radius, degrees = 0) {
         super(position, radius, degrees)
@@ -323,6 +335,10 @@ class Triangle extends _polygon__WEBPACK_IMPORTED_MODULE_0__.default {
 
     update(state) {
         this.θ = (this.θ + (Math.PI / 30)) % (2 * Math.PI);
+        this.r = 30 + 15 * Math.sin((360 / 60) * (state.client.frameCount % 60) * (Math.PI / 180));
+        this.position = this.position.add(
+            new _utils_Vector__WEBPACK_IMPORTED_MODULE_0__.default(2 * Math.sin((state.client.frameCount % 360) * (Math.PI / 180)), 0)
+        )
     }
 
     draw(ctx) {
