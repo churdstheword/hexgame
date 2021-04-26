@@ -9,7 +9,9 @@ export default class Debug extends Entity {
     }
 
     update(state) {
-        this.value = state[this.field];
+        if (typeof this.field == "function") {
+            this.value = this.field.call();
+        }
     }
 
     draw(ctx) {

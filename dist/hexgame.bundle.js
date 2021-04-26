@@ -28,6 +28,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _entities_shapes_triangle_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../entities/shapes/triangle.js */ "./src/entities/shapes/triangle.js");
 /* harmony import */ var _entities_shapes_square_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../entities/shapes/square.js */ "./src/entities/shapes/square.js");
 /* harmony import */ var _entities_text_debug_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../entities/text/debug.js */ "./src/entities/text/debug.js");
+/* harmony import */ var _utils_Keyboard_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils/Keyboard.js */ "./src/utils/Keyboard.js");
 
 
 
@@ -39,85 +40,99 @@ __webpack_require__.r(__webpack_exports__);
 
 class Client {
 
-	constructor(x, y, fps, container) {
+    constructor(w, h, fps, container) {
 
-		this.x = x;
-		this.y = y
-		this.cwidth = 800
-		this.cheight = 600;
+        this.config = {
+            width: w,
+            height: h,
+            targetFps: fps
+        }
 
-		this.fps = fps;
-		this.frameCount = 0;
-		this.lastFPSUpdate = 0
-		this.framesThisSecond = 0
+        this.state = {
+            status: 'running',
+            client: {
+                curFPS: 0,
+                frameCount: 0,
+                lastFPSUpdate: 0,
+                framesThisSecond: 0,
+                tick: 1000 / fps,
+                nextGameTick: new Date().getTime()
+            },
+            entities: [],
 
-		this.viewport = (0,_utils_utils_canvas_js__WEBPACK_IMPORTED_MODULE_0__.generateCanvas)(this.cwidth, this.cheight);
-		this.context = this.viewport.getContext('2d');
 
-		container.insertBefore(this.viewport, container.firstChild);
+            keyboard: new _utils_Keyboard_js__WEBPACK_IMPORTED_MODULE_6__.default(),
 
-	}
 
-	init() {
+        }
 
-		this.tick = 1000 / this.fps;
-		this.nextGameTick = new Date().getTime();
+        this.viewport = (0,_utils_utils_canvas_js__WEBPACK_IMPORTED_MODULE_0__.generateCanvas)(this.config.width, this.config.height);
+        this.context = this.viewport.getContext('2d');
+        container.insertBefore(this.viewport, container.firstChild);
 
-		this.entities = [];
-		this.entities[0] = new _entities_shapes_hexagon_js__WEBPACK_IMPORTED_MODULE_2__.default(new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_1__.default(100, 100), 100, 0);
-		this.entities[1] = new _entities_shapes_triangle_js__WEBPACK_IMPORTED_MODULE_3__.default(new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_1__.default(250, 250), 50, 15);
-		this.entities[2] = new _entities_shapes_square_js__WEBPACK_IMPORTED_MODULE_4__.default(new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_1__.default(350, 100), 75, 25);
-		this.entities[3] = new _entities_text_debug_js__WEBPACK_IMPORTED_MODULE_5__.default(new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_1__.default(10,30), 'FPS', 'curFPS');
-		this.entities[4] = new _entities_text_debug_js__WEBPACK_IMPORTED_MODULE_5__.default(new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_1__.default(10,50), 'Frames', 'frameCount');
+    }
 
-		this.loop();
-	}
+    init() {
 
-	loop() {
+        this.state.entities = [];
+        this.state.entities[0] = new _entities_shapes_hexagon_js__WEBPACK_IMPORTED_MODULE_2__.default(new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_1__.default(100, 100), 100, 0);
+        this.state.entities[1] = new _entities_shapes_triangle_js__WEBPACK_IMPORTED_MODULE_3__.default(new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_1__.default(250, 250), 50, 15);
+        this.state.entities[2] = new _entities_shapes_square_js__WEBPACK_IMPORTED_MODULE_4__.default(new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_1__.default(350, 100), 75, 25);
+        this.state.entities[3] = new _entities_text_debug_js__WEBPACK_IMPORTED_MODULE_5__.default(new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_1__.default(10, 30), 'FPS', () => { return this.state.client.curFPS });
+        this.state.entities[4] = new _entities_text_debug_js__WEBPACK_IMPORTED_MODULE_5__.default(new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_1__.default(10, 50), 'Frames', () => { return this.state.client.frameCount });
+        this.state.entities[5] = new _entities_text_debug_js__WEBPACK_IMPORTED_MODULE_5__.default(new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_1__.default(10, 70), 'keysPressed', () => { return this.state.keyboard.toString() });
 
-		this.frameid = window.requestAnimationFrame(this.loop.bind(this));
+        this.loop();
+    }
 
-		let t1 = new Date().getTime()
+    loop() {
 
-		if (t1 > this.nextGameTick) {
-			this.nextGameTick += this.tick;
-			this.frameCount++
-			this.update(t1);
-			this.draw();
-		}
+        this.frameid = window.requestAnimationFrame(this.loop.bind(this));
 
-		if (this.gameState == 'paused') {
-			cancelAnimationFrame(this.frameid);
-		}
+        let time = new Date().getTime()
 
-	}
+        if (time > this.state.client.nextGameTick) {
+            this.state.client.nextGameTick += this.state.client.tick;
+            this.state.client.frameCount++
+            this.update(time);
+            this.draw();
+        }
 
-	update(timestamp) {
+        if (this.state.status == 'paused') {
+            cancelAnimationFrame(this.frameid);
+        }
 
-		// Measure how many frames were rendering each loop 
-		if (timestamp > this.lastFPSUpdate + 1000) {
-			this.curFPS = this.framesThisSecond;
-			this.lastFPSUpdate = timestamp;
-			this.framesThisSecond = 0;
-		} else {
-			this.framesThisSecond++;
-		}
+    }
 
-		for(let entity of this.entities) {
-			entity.update(this);
-		}
+    update(timestamp) {
 
-	}
+        // Measure how many frames were rendering each loop 
+        if (timestamp > this.state.client.lastFPSUpdate + 1000) {
+            this.state.client.curFPS = this.state.client.framesThisSecond;
+            this.state.client.lastFPSUpdate = timestamp;
+            this.state.client.framesThisSecond = 0;
+        } else {
+            this.state.client.framesThisSecond++;
+        }
 
-	draw() {
+        // Update all the entities
+        for (let entity of this.state.entities) {
+            entity.update(this.state);
+        }
 
-		this.context.clearRect(0, 0, this.cwidth, this.cheight)
+    }
 
-		for(let entity of this.entities) {
-			entity.draw(this.context);
-		}
+    draw() {
 
-	}
+        // Clear the canvas
+        this.context.clearRect(0, 0, this.config.width, this.config.height)
+
+        // Draw all the entities
+        for (let entity of this.state.entities) {
+            entity.draw(this.context);
+        }
+
+    }
 
 }
 
@@ -346,7 +361,9 @@ class Debug extends _entity__WEBPACK_IMPORTED_MODULE_0__.default {
     }
 
     update(state) {
-        this.value = state[this.field];
+        if (typeof this.field == "function") {
+            this.value = this.field.call();
+        }
     }
 
     draw(ctx) {
@@ -359,6 +376,85 @@ class Debug extends _entity__WEBPACK_IMPORTED_MODULE_0__.default {
         return `${this.label}: ${this.value}`;
     }
 
+}
+
+/***/ }),
+
+/***/ "./src/utils/Keyboard.js":
+/*!*******************************!*\
+  !*** ./src/utils/Keyboard.js ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Keyboard)
+/* harmony export */ });
+class Keyboard {
+
+    constructor() {
+
+        window.addEventListener("keydown", (event) => this.handleKeyEvent(event, true), false);
+        window.addEventListener("keyup", (event) => this.handleKeyEvent(event, false), false);
+
+        this.input = {
+            "UP": false,
+            "DOWN": false,
+            "LEFT": false,
+            "RIGHT": false
+        };
+    }
+
+
+    handleKeyEvent(event, pressed) {
+
+        if (event.defaultPrevented) {
+            return;
+        }
+
+        switch (event.key) {
+            case "w":
+            case "W":
+            case "Up":
+            case "ArrowUp":
+                this.input.UP = pressed;
+                break;
+
+            case "s":
+            case "S":
+            case "Down":
+            case "ArrowDown":
+                this.input.DOWN = pressed;
+                break;
+
+            case "a":
+            case "A":
+            case "Left":
+            case "ArrowLeft":
+                this.input.LEFT = pressed;
+                break;
+
+            case "d":
+            case "D":
+            case "Right":
+            case "ArrowRight":
+                this.input.RIGHT = pressed;
+                break;
+
+            default:
+                return;
+        }
+
+        // Cancel the default action to avoid it being handled twice
+        event.preventDefault();
+    }
+
+    toString() {
+        return Object.keys(this.input).reduce((acc, key) => {
+            if (this.input[key] === true) acc.push(key);
+            return acc;
+        }, []).join(", ");
+    }
 }
 
 /***/ }),
