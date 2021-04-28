@@ -1,5 +1,5 @@
 
-class Hex {
+export default class Hex {
 
     constructor(q, r, s) {
         this.q = q;
@@ -9,10 +9,6 @@ class Hex {
 
     toString() {
         return `q:${this.q}|r:${this.r}|s:${this.s}`;
-    }
-
-    add(hex) {
-        
     }
 
 }

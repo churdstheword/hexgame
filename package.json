@@ -9,6 +9,7 @@
         "build": "webpack --mode production"
     },
     "devDependencies": {
+        "http-server": "^0.12.3",
         "lodash": "^4.17.21",
         "webpack": "^5.35.1",
         "webpack-cli": "^4.6.0"

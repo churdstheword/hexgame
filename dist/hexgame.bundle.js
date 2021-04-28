@@ -29,6 +29,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _entities_shapes_square_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../entities/shapes/square.js */ "./src/entities/shapes/square.js");
 /* harmony import */ var _entities_text_debug_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../entities/text/debug.js */ "./src/entities/text/debug.js");
 /* harmony import */ var _utils_Keyboard_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils/Keyboard.js */ "./src/utils/Keyboard.js");
+/* harmony import */ var _entities_HexGrid_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../entities/HexGrid.js */ "./src/entities/HexGrid.js");
 
 
 
@@ -39,74 +40,78 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class Client {
-
     constructor(w, h, fps, container) {
-
         this.config = {
             width: w,
             height: h,
-            targetFps: fps
-        }
+            targetFps: fps,
+        };
 
         this.state = {
-            status: 'running',
+            status: "running",
             client: {
                 curFPS: 0,
                 frameCount: 0,
                 lastFPSUpdate: 0,
                 framesThisSecond: 0,
                 tick: 1000 / fps,
-                nextGameTick: new Date().getTime()
+                nextGameTick: new Date().getTime(),
             },
             entities: [],
-
-
             keyboard: new _utils_Keyboard_js__WEBPACK_IMPORTED_MODULE_6__.default(),
-
-
-        }
+        };
 
         this.viewport = (0,_utils_utils_canvas_js__WEBPACK_IMPORTED_MODULE_0__.generateCanvas)(this.config.width, this.config.height);
-        this.context = this.viewport.getContext('2d');
+        this.context = this.viewport.getContext("2d");
         container.insertBefore(this.viewport, container.firstChild);
-
     }
 
     init() {
-
         this.state.entities = [];
-        this.state.entities[0] = new _entities_shapes_hexagon_js__WEBPACK_IMPORTED_MODULE_2__.default(new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_1__.default(100, 100), 100, 0);
-        this.state.entities[1] = new _entities_shapes_triangle_js__WEBPACK_IMPORTED_MODULE_3__.default(new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_1__.default(250, 250), 50, 15);
-        this.state.entities[2] = new _entities_shapes_square_js__WEBPACK_IMPORTED_MODULE_4__.default(new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_1__.default(350, 100), 75, 25);
-        this.state.entities[3] = new _entities_text_debug_js__WEBPACK_IMPORTED_MODULE_5__.default(new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_1__.default(10, 30), 'FPS', () => { return this.state.client.curFPS });
-        this.state.entities[4] = new _entities_text_debug_js__WEBPACK_IMPORTED_MODULE_5__.default(new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_1__.default(10, 50), 'Frames', () => { return this.state.client.frameCount });
-        this.state.entities[5] = new _entities_text_debug_js__WEBPACK_IMPORTED_MODULE_5__.default(new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_1__.default(10, 70), 'keysPressed', () => { return this.state.keyboard.toString() });
+        //this.state.entities.push(new Hexagon(new Vector(100, 100), 100, 0));
+        //this.state.entities.push(new Triangle(new Vector(250, 250), 50, 15));
+        //this.state.entities.push(new Square(new Vector(350, 100), 75, 25));
+        
+        this.state.entities.push(
+            new _entities_text_debug_js__WEBPACK_IMPORTED_MODULE_5__.default(new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_1__.default(10, 30), "FPS", () => {
+                return this.state.client.curFPS;
+            })
+        );
+        this.state.entities.push(
+            new _entities_text_debug_js__WEBPACK_IMPORTED_MODULE_5__.default(new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_1__.default(10, 50), "Frames", () => {
+                return this.state.client.frameCount;
+            })
+        );
+        this.state.entities.push(
+            new _entities_text_debug_js__WEBPACK_IMPORTED_MODULE_5__.default(new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_1__.default(10, 70), "keysPressed", () => {
+                return this.state.keyboard.toString();
+            })
+        );
+
+        this.state.entities.push(new _entities_HexGrid_js__WEBPACK_IMPORTED_MODULE_7__.default(new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_1__.default(25, 100), 15));
 
         this.loop();
     }
 
     loop() {
-
         this.frameid = window.requestAnimationFrame(this.loop.bind(this));
 
-        let time = new Date().getTime()
+        let time = new Date().getTime();
 
         if (time > this.state.client.nextGameTick) {
             this.state.client.nextGameTick += this.state.client.tick;
-            this.state.client.frameCount++
+            this.state.client.frameCount++;
             this.update(time);
             this.draw();
         }
 
-        if (this.state.status == 'paused') {
+        if (this.state.status == "paused") {
             cancelAnimationFrame(this.frameid);
         }
-
     }
 
     update(timestamp) {
-
-        // Measure how many frames were rendering each loop 
+        // Measure how many frames were rendering each loop
         if (timestamp > this.state.client.lastFPSUpdate + 1000) {
             this.state.client.curFPS = this.state.client.framesThisSecond;
             this.state.client.lastFPSUpdate = timestamp;
@@ -119,21 +124,81 @@ class Client {
         for (let entity of this.state.entities) {
             entity.update(this.state);
         }
-
     }
 
     draw() {
-
         // Clear the canvas
-        this.context.clearRect(0, 0, this.config.width, this.config.height)
+        this.context.clearRect(0, 0, this.config.width, this.config.height);
 
         // Draw all the entities
         for (let entity of this.state.entities) {
             entity.draw(this.context);
         }
+    }
+}
 
+
+/***/ }),
+
+/***/ "./src/entities/HexGrid.js":
+/*!*********************************!*\
+  !*** ./src/entities/HexGrid.js ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ HexGrid)
+/* harmony export */ });
+/* harmony import */ var _entity__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./entity */ "./src/entities/entity.js");
+/* harmony import */ var _shapes_hexagon__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./shapes/hexagon */ "./src/entities/shapes/hexagon.js");
+/* harmony import */ var _utils_Vector__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/Vector */ "./src/utils/Vector.js");
+/* harmony import */ var _utils_Hex__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/Hex */ "./src/utils/Hex.js");
+
+
+
+
+
+/**
+ *
+ */
+class HexGrid extends _entity__WEBPACK_IMPORTED_MODULE_0__.default {
+    constructor(position, size) {
+        super(position);
+        this.size = size;
+        
+        let width = 20;
+        let height = 15;
+        this.map = [];
+        for (let r = 0; r < height; r++) {
+            let offset = Math.floor(r/2);
+            for(let q = -offset; q < width - offset; q++) {
+                this.map.push(new _utils_Hex__WEBPACK_IMPORTED_MODULE_3__.default(q, r, -q-r));
+            }
+        }
+            
     }
 
+    draw(ctx) {
+        // Draw a hexagon at each of the coordinate from the origin
+        for (let hex of this.map) {
+            // Convert the Hex coord into a Vector
+            let x = this.size * (Math.sqrt(3) * hex.q + (Math.sqrt(3) / 2) * hex.r);
+            let y = this.size * (3 / 2) * hex.r;
+            // Make a hexagon and draw it
+
+            const hexagon = new _shapes_hexagon__WEBPACK_IMPORTED_MODULE_1__.default(this.position.add(new _utils_Vector__WEBPACK_IMPORTED_MODULE_2__.default(x, y)), this.size, 30);
+            
+            ctx.fillStyle = '#' + Math.floor(Math.random()*16777215).toString(16);
+            hexagon.draw(ctx);
+            ctx.fill();
+        }
+    }
+
+    update(state) {
+
+
+    }
 }
 
 
@@ -393,6 +458,34 @@ class Debug extends _entity__WEBPACK_IMPORTED_MODULE_0__.default {
     }
 
 }
+
+/***/ }),
+
+/***/ "./src/utils/Hex.js":
+/*!**************************!*\
+  !*** ./src/utils/Hex.js ***!
+  \**************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Hex)
+/* harmony export */ });
+
+class Hex {
+
+    constructor(q, r, s) {
+        this.q = q;
+        this.r = r;
+        this.s = s;
+    }
+
+    toString() {
+        return `q:${this.q}|r:${this.r}|s:${this.s}`;
+    }
+
+}
+
 
 /***/ }),
 
