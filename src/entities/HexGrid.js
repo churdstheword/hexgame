@@ -1,7 +1,7 @@
 import Entity from "./entity";
-import Hexagon from "./shapes/hexagon";
 import Vector from "../utils/Vector";
 import Hex from "../utils/Hex";
+import HexCell from "./HexCell";
 
 /**
  *
@@ -10,37 +10,33 @@ export default class HexGrid extends Entity {
     constructor(position, size) {
         super(position);
         this.size = size;
-        
-        let width = 20;
-        let height = 15;
-        this.map = [];
-        for (let r = 0; r < height; r++) {
-            let offset = Math.floor(r/2);
-            for(let q = -offset; q < width - offset; q++) {
-                this.map.push(new Hex(q, r, -q-r));
+
+        this.state = {
+            width: 20,
+            height: 15,
+            cells: [],
+        };
+
+        // Build a map for debugging
+        for (let r = 0; r < this.state.height; r++) {
+            let offset = Math.floor(r / 2);
+            for (let q = -offset; q < this.state.width - offset; q++) {
+                this.state.cells.push(new HexCell(new Hex(q, r, -q - r), size));
             }
         }
-            
     }
 
     draw(ctx) {
         // Draw a hexagon at each of the coordinate from the origin
-        for (let hex of this.map) {
-            // Convert the Hex coord into a Vector
-            let x = this.size * (Math.sqrt(3) * hex.q + (Math.sqrt(3) / 2) * hex.r);
-            let y = this.size * (3 / 2) * hex.r;
-            // Make a hexagon and draw it
-
-            const hexagon = new Hexagon(this.position.add(new Vector(x, y)), this.size, 30);
-            
-            ctx.fillStyle = '#' + Math.floor(Math.random()*16777215).toString(16);
-            hexagon.draw(ctx);
-            ctx.fill();
+        for (let cell of this.state.cells) {
+            cell.draw(ctx);
         }
     }
 
     update(state) {
-
-
+        // Loop through each and determine if we need to color or highlight it
+        for (let cell of this.state.cells) {
+            cell.update(state, this);
+        }
     }
 }

@@ -6,6 +6,7 @@ import Square from "../entities/shapes/square.js";
 import Debug from "../entities/text/debug.js";
 import Keyboard from "../utils/Keyboard.js";
 import HexGrid from "../entities/HexGrid.js";
+import Mouse from "../utils/Mouse.js";
 
 export default class Client {
     constructor(w, h, fps, container) {
@@ -27,6 +28,7 @@ export default class Client {
             },
             entities: [],
             keyboard: new Keyboard(),
+            mouse: new Mouse(),
         };
 
         this.viewport = generateCanvas(this.config.width, this.config.height);
@@ -39,7 +41,7 @@ export default class Client {
         //this.state.entities.push(new Hexagon(new Vector(100, 100), 100, 0));
         //this.state.entities.push(new Triangle(new Vector(250, 250), 50, 15));
         //this.state.entities.push(new Square(new Vector(350, 100), 75, 25));
-        
+
         this.state.entities.push(
             new Debug(new Vector(10, 30), "FPS", () => {
                 return this.state.client.curFPS;
@@ -55,8 +57,13 @@ export default class Client {
                 return this.state.keyboard.toString();
             })
         );
+        this.state.entities.push(
+            new Debug(new Vector(10, 90), "mouse", () => {
+                return this.state.mouse.toString();
+            })
+        );
 
-        this.state.entities.push(new HexGrid(new Vector(25, 100), 15));
+        this.state.entities.push(new HexGrid(new Vector(25, 120), 15));
 
         this.loop();
     }

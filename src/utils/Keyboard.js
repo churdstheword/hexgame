@@ -58,9 +58,6 @@ export default class Keyboard {
     }
 
     toString() {
-        return Object.keys(this.input).reduce((acc, key) => {
-            if (this.input[key] === true) acc.push(key);
-            return acc;
-        }, []).join(", ");
+        return JSON.stringify(this.input);
     }
 }
