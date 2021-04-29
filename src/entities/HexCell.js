@@ -19,17 +19,10 @@ export default class HexCell {
             this.state.center = parent.position.add(new Vector(x, y));
         }
 
-        // Determine if the mouse position is inside the cell
-        let insideCell = this.pointInPoly(
-            this.getVertices(this.state.center),
-            new Vector(state.mouse.input.cursorX, state.mouse.input.cursorY)
-        );
-
-        if (insideCell) {
-            this.state.color = "#28d45e";
-        } else {
-            this.state.color = "#FFFFFF";
-        }
+        // Determine if the mouse pointer is inside the cell, if so, color the cell
+        let vertices = this.getVertices(this.state.center);
+        let point = new Vector(state.mouse.input.cursorX, state.mouse.input.cursorY);
+        this.state.color = this.pointInPoly(vertices, point) ? "#28d45e" : "#FFFFFF";
     }
 
     draw(ctx) {
@@ -55,7 +48,7 @@ export default class HexCell {
     }
 
     /**
-     * Determines if a point lies within a set of vertices of a polygon
+     * Determines if a point lies within the set of vertices of a polygon
      *
      * @param Vector[] vertices
      * @param Vector point

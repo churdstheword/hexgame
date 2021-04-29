@@ -181,16 +181,9 @@ class HexCell {
         }
 
         // Determine if the mouse position is inside the cell
-        let insideCell = this.pointInPoly(
-            this.getVertices(this.state.center),
-            new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_0__.default(state.mouse.input.cursorX, state.mouse.input.cursorY)
-        );
-
-        if (insideCell) {
-            this.state.color = "#28d45e";
-        } else {
-            this.state.color = "#FFFFFF";
-        }
+        let vertices = this.getVertices(this.state.center);
+        let point = new _utils_Vector_js__WEBPACK_IMPORTED_MODULE_0__.default(state.mouse.input.cursorX, state.mouse.input.cursorY);
+        this.state.color = this.pointInPoly(vertices, point) ? "#28d45e" : "#FFFFFF";
     }
 
     draw(ctx) {
