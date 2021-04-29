@@ -53,6 +53,7 @@ export default class HexCell {
      * @param Vector[] vertices
      * @param Vector point
      * @returns boolean
+     * @link http://alienryderflex.com/polygon/
      */
     pointInPoly(vertices, point) {
         let inPoly = false;
