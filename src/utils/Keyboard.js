@@ -13,7 +13,6 @@ export default class Keyboard {
         };
     }
 
-
     handleKeyEvent(event, pressed) {
 
         if (event.defaultPrevented) {

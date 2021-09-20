@@ -1,35 +1,72 @@
+import Entity from "./entity";
 import Vector from "../utils/Vector.js";
 
-export default class HexCell {
-    constructor(hex, size) {
-        this.hex = hex;
-        this.size = size;
+export default class HexCell extends Entity {
+    constructor(options) {
 
-        this.state = {
+        super(options);
+
+        const defaults = {
+            hex: null,
+            radius: null,
             center: new Vector(0, 0),
             fillColor: "#FFFFFF",
+            selected: false,
         };
+
+        Object.assign(this, defaults, Object.fromEntries(
+            Object.keys(defaults).filter(key => key in options).map(key => [key, options[key]]))
+        );
+
     }
 
+
+
     update(state, parent) {
+
         if (state.client.frameCount % 5 == 0) {
             // Calculate the vector of the cell's center
-            let x = this.size * (Math.sqrt(3) * this.hex.q + (Math.sqrt(3) / 2) * this.hex.r);
-            let y = this.size * (3 / 2) * this.hex.r;
-            this.state.center = parent.position.add(new Vector(x, y));
+            let x = this.radius * (Math.sqrt(3) * this.hex.q + (Math.sqrt(3) / 2) * this.hex.r);
+            let y = this.radius * (3 / 2) * this.hex.r;
+            this.center = parent.position.add(new Vector(x, y));
         }
 
         // Determine if the mouse pointer is inside the cell, if so, color the cell
-        let vertices = this.getVertices(this.state.center);
+        let vertices = this.getVertices(this.center);
         let point = new Vector(state.mouse.input.cursorX, state.mouse.input.cursorY);
-        this.state.color = this.pointInPoly(vertices, point) ? "#28d45e" : "#FFFFFF";
+
+
+        let pointInPoly = this.pointInPoly(vertices, point);
+
+        if (pointInPoly) {
+            if (this.lastMouseButtonState == true && state.mouse.input.button.LEFT == false) {
+                this.selected = !this.selected;
+            }
+
+            this.lastMouseButtonState = state.mouse.input.button.LEFT;
+        }
+
+        let isSelected = this.selected;
+
+        if (pointInPoly && isSelected) {
+            this.color = "#A020F0";
+        } else if (pointInPoly) {
+            this.color = "#0000FF";
+        } else if (isSelected) {
+            this.color = "#FF0000";
+        }
+
+    }
+
+    handleInput() {
+
     }
 
     draw(ctx) {
         // Use the vertices to draw the hexagon
         ctx.beginPath();
-        ctx.fillStyle = this.state.color;
-        for (let vertex of this.getVertices(this.state.center)) {
+        ctx.fillStyle = this.color;
+        for (let vertex of this.getVertices(this.center)) {
             ctx.lineTo(vertex.x, vertex.y);
         }
         ctx.closePath();
@@ -39,7 +76,7 @@ export default class HexCell {
 
     getVertices(center) {
         let vertices = [];
-        const baseVector = new Vector(this.size, 0);
+        const baseVector = new Vector(this.radius, 0);
         for (var i = 0; i < 6; i++) {
             let vertex = center.add(baseVector.rotate(i * ((2 * Math.PI) / 6) + 30 * (Math.PI / 180)));
             vertices.push(vertex);

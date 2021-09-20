@@ -1,16 +1,25 @@
 import Entity from "../entity";
 
 export default class Debug extends Entity {
-    constructor(position, label, field) {
-        super(position)
-        this.field = field;
-        this.label = label;
-        this.value = '';
+    constructor(options) {
+
+        super(options)
+
+        const defaults = {
+            label: '',
+            value: '',
+            callback: null
+        };
+
+        Object.assign(this, defaults, Object.fromEntries(
+            Object.keys(defaults).filter(key => key in options).map(key => [key, options[key]]))
+        );
+
     }
 
     update(state) {
-        if (typeof this.field == "function") {
-            this.value = this.field.call();
+        if (typeof this.callback == "function") {
+            this.value = this.callback.call();
         }
     }
 

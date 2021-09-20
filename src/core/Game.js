@@ -1,15 +1,14 @@
 import { generateCanvas } from "../utils/utils.canvas.js";
 import Vector from "../utils/Vector.js";
-import Hexagon from "../entities/shapes/hexagon.js";
-import Triangle from "../entities/shapes/triangle.js";
-import Square from "../entities/shapes/square.js";
 import Debug from "../entities/text/debug.js";
 import Keyboard from "../utils/Keyboard.js";
 import HexGrid from "../entities/HexGrid.js";
 import Mouse from "../utils/Mouse.js";
 
-export default class Client {
+export default class Game {
+
     constructor(w, h, fps, container) {
+
         this.config = {
             width: w,
             height: h,
@@ -24,7 +23,8 @@ export default class Client {
                 lastFPSUpdate: 0,
                 framesThisSecond: 0,
                 tick: 1000 / fps,
-                nextGameTick: new Date().getTime(),
+                lastGameTick: 0,
+                nextGameTick: 0,
             },
             entities: [],
             keyboard: new Keyboard(),
@@ -38,54 +38,69 @@ export default class Client {
 
     init() {
         this.state.entities = [];
-        //this.state.entities.push(new Hexagon(new Vector(100, 100), 100, 0));
-        //this.state.entities.push(new Triangle(new Vector(250, 250), 50, 15));
-        //this.state.entities.push(new Square(new Vector(350, 100), 75, 25));
 
         this.state.entities.push(
-            new Debug(new Vector(10, 30), "FPS", () => {
-                return this.state.client.curFPS;
+            new Debug({
+                position: new Vector(10, 30),
+                label: "FPS",
+                callback: () => this.state.client.curFPS
             })
         );
         this.state.entities.push(
-            new Debug(new Vector(10, 50), "Frames", () => {
-                return this.state.client.frameCount;
+            new Debug({
+                position: new Vector(10, 50),
+                label: "Frames",
+                callback: () => this.state.client.frameCount
             })
         );
         this.state.entities.push(
-            new Debug(new Vector(10, 70), "keysPressed", () => {
-                return this.state.keyboard.toString();
+            new Debug({
+                position: new Vector(10, 70),
+                label: "keysPressed",
+                callback: () => this.state.keyboard.toString()
             })
         );
         this.state.entities.push(
-            new Debug(new Vector(10, 90), "mouse", () => {
-                return this.state.mouse.toString();
+            new Debug({
+                position: new Vector(10, 90),
+                label: "mouse",
+                callback: () => this.state.mouse.toString()
             })
         );
 
-        this.state.entities.push(new HexGrid(new Vector(25, 120), 15));
+        this.state.entities.push(
+            new HexGrid({
+                position: new Vector(25, 120),
+                cellRadius: 15,
+                columns: 4,
+                rows: 4,
+            })
+        );
 
-        this.loop();
+        this.frameid = window.requestAnimationFrame(this.gameTick.bind(this));
+
     }
 
-    loop() {
-        this.frameid = window.requestAnimationFrame(this.loop.bind(this));
-
-        let time = new Date().getTime();
-
-        if (time > this.state.client.nextGameTick) {
-            this.state.client.nextGameTick += this.state.client.tick;
-            this.state.client.frameCount++;
-            this.update(time);
-            this.draw();
-        }
+    gameTick(timestamp) {
 
         if (this.state.status == "paused") {
             cancelAnimationFrame(this.frameid);
         }
+
+        if (timestamp > this.state.client.nextGameTick) {
+            this.state.client.nextGameTick += this.state.client.tick;
+            this.state.client.frameCount++;
+            this.update(timestamp);
+            this.draw();
+        }
+
+        this.state.client.lastGameTick = timestamp;
+        this.frameid = window.requestAnimationFrame(this.gameTick.bind(this));
+
     }
 
     update(timestamp) {
+
         // Measure how many frames were rendering each loop
         if (timestamp > this.state.client.lastFPSUpdate + 1000) {
             this.state.client.curFPS = this.state.client.framesThisSecond;
