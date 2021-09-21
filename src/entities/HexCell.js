@@ -1,4 +1,4 @@
-import Entity from "./entity";
+import Entity from "./Entity";
 import Vector from "../utils/Vector.js";
 
 export default class HexCell extends Entity {
@@ -20,8 +20,6 @@ export default class HexCell extends Entity {
 
     }
 
-
-
     update(state, parent) {
 
         if (state.client.frameCount % 5 == 0) {
@@ -33,8 +31,7 @@ export default class HexCell extends Entity {
 
         // Determine if the mouse pointer is inside the cell, if so, color the cell
         let vertices = this.getVertices(this.center);
-        let point = new Vector(state.mouse.input.cursorX, state.mouse.input.cursorY);
-
+        let point = state.mouse.getMousePosition();
 
         let pointInPoly = this.pointInPoly(vertices, point);
 
@@ -49,16 +46,14 @@ export default class HexCell extends Entity {
         let isSelected = this.selected;
 
         if (pointInPoly && isSelected) {
-            this.color = "#A020F0";
-        } else if (pointInPoly) {
-            this.color = "#0000FF";
+            this.color = "#3C5BC3";
+        } else if (pointInPoly && !isSelected) {
+            this.color = "#C1993E";
         } else if (isSelected) {
-            this.color = "#FF0000";
+            this.color = "#637CCF";
+        } else {
+            this.color = "#CDAD65"
         }
-
-    }
-
-    handleInput() {
 
     }
 

@@ -1,9 +1,13 @@
+import Vector from "./Vector";
+
 export default class Mouse {
-    constructor() {
+    constructor(viewport) {
         window.addEventListener("mousemove", (event) => this.handleMove(event), false);
         window.addEventListener("mousedown", (event) => this.handleKeyEvent(event, true), false);
         window.addEventListener("mouseup", (event) => this.handleKeyEvent(event, false), false);
         window.addEventListener("contextmenu", (event) => this.handleContextMenu(event), false);
+
+        this.viewport = viewport;
 
         this.input = {
             button: {
@@ -61,6 +65,11 @@ export default class Mouse {
     handleContextMenu(event) {
         event = event || window.event;
         event.preventDefault();
+    }
+
+    getMousePosition() {
+        let rect = this.viewport.getBoundingClientRect();
+        return new Vector(this.input.cursorX - rect.left, this.input.cursorY - rect.top);
     }
 
     toString() {

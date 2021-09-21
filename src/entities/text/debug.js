@@ -1,4 +1,4 @@
-import Entity from "../entity";
+import Entity from "../Entity";
 
 export default class Debug extends Entity {
     constructor(options) {

@@ -1,4 +1,4 @@
-import Entity from "./entity";
+import Entity from "./Entity";
 import Vector from "../utils/Vector";
 import Hex from "../utils/Hex";
 import HexCell from "./HexCell";

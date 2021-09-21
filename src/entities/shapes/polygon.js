@@ -1,5 +1,5 @@
 import Vector from "../../utils/Vector";
-import Entity from "../entity";
+import Entity from "../Entity";
 
 /**
  * Abstract Class Polygon

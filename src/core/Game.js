@@ -1,9 +1,9 @@
-import { generateCanvas } from "../utils/utils.canvas.js";
+import Canvas from "../utils/Canvas.js";
 import Vector from "../utils/Vector.js";
-import Debug from "../entities/text/debug.js";
 import Keyboard from "../utils/Keyboard.js";
-import HexGrid from "../entities/HexGrid.js";
 import Mouse from "../utils/Mouse.js";
+import Debug from "../entities/text/debug.js";
+import HexGrid from "../entities/HexGrid.js";
 
 export default class Game {
 
@@ -14,6 +14,10 @@ export default class Game {
             height: h,
             targetFps: fps,
         };
+
+        this.viewport = Canvas.generateCanvas(this.config.width, this.config.height);
+        this.context = this.viewport.getContext("2d");
+        container.insertBefore(this.viewport, container.firstChild);
 
         this.state = {
             status: "running",
@@ -28,12 +32,9 @@ export default class Game {
             },
             entities: [],
             keyboard: new Keyboard(),
-            mouse: new Mouse(),
+            mouse: new Mouse(this.viewport),
         };
 
-        this.viewport = generateCanvas(this.config.width, this.config.height);
-        this.context = this.viewport.getContext("2d");
-        container.insertBefore(this.viewport, container.firstChild);
     }
 
     init() {
@@ -72,8 +73,8 @@ export default class Game {
             new HexGrid({
                 position: new Vector(25, 120),
                 cellRadius: 15,
-                columns: 4,
-                rows: 4,
+                columns: 12,
+                rows: 8,
             })
         );
 
