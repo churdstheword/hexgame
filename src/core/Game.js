@@ -4,6 +4,7 @@ import Keyboard from "../utils/Keyboard.js";
 import Mouse from "../utils/Mouse.js";
 import Debug from "../entities/text/debug.js";
 import HexGrid from "../entities/HexGrid.js";
+import Square from "../entities/shapes/square.js";
 
 export default class Game {
 
@@ -69,14 +70,24 @@ export default class Game {
             })
         );
 
+        // this.state.entities.push(
+        //     new HexGrid({
+        //         position: new Vector(25, 120),
+        //         cellRadius: 15,
+        //         columns: 12,
+        //         rows: 8,
+        //     })
+        // );
+
         this.state.entities.push(
-            new HexGrid({
-                position: new Vector(25, 120),
-                cellRadius: 15,
-                columns: 12,
-                rows: 8,
+            new Square({
+                position: new Vector(20, 20),
+                sides: 4,
+                r: 20,
+                θ: 90,
             })
         );
+
 
         this.frameid = window.requestAnimationFrame(this.gameTick.bind(this));
 
