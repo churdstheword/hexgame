@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <title>Hex Game</title>
+    <link rel="icon" href="favicon.ico">
+    <script defer="defer" src="../dist/hexgame.bundle.js"></script>
+</head>
+
+<body>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            
+            var game = new HexEngine.core.Game(800, 600, 60, document.querySelector('body'))
+            game.init();
+
+            game.state.entities.push(
+                new HexEngine.entities.text.Debug({
+                    position: new HexEngine.utils.Vector(10, 30),
+                    label: "FPS",
+                    callback: () => game.state.client.curFPS
+                })
+            );
+            game.state.entities.push(
+                new HexEngine.entities.text.Debug({
+                    position: new HexEngine.utils.Vector(10, 50),
+                    label: "Frames",
+                    callback: () => game.state.client.frameCount
+                })
+            );
+            game.state.entities.push(
+                new HexEngine.entities.text.Debug({
+                    position: new HexEngine.utils.Vector(10, 70),
+                    label: "keysPressed",
+                    callback: () => game.state.keyboard.toString()
+                })
+            );
+            game.state.entities.push(
+                new HexEngine.entities.text.Debug({
+                    position: new HexEngine.utils.Vector(10, 90),
+                    label: "mouse",
+                    callback: () => game.state.mouse.toString()
+                })
+            );
+
+            game.state.entities.push(
+                new HexEngine.entities.shapes.Square({
+                    position: new HexEngine.utils.Vector(20, 20),
+                    sides: 4,
+                    r: 20,
+                    θ: 90,
+                })
+            );
+
+        });
+
+    </script>
+</body>
+
+</html>

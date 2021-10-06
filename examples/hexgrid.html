@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <title>Hex Game</title>
+    <link rel="icon" href="favicon.ico">
+    <script defer="defer" src="../dist/hexgame.bundle.js"></script>
+</head>
+
+<body>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+
+            var game = new HexEngine.core.Game(800, 600, 60, document.querySelector('body'))
+            game.init();
+
+            game.state.entities.push(
+                new HexEngine.entities.HexGrid({
+                    position: new HexEngine.utils.Vector(25, 25),
+                    cellRadius: 15,
+                    columns: 12,
+                    rows: 8,
+                })
+            );
+
+        });
+
+    </script>
+</body>
+
+</html>

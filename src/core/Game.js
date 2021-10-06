@@ -1,10 +1,6 @@
 import Canvas from "../utils/Canvas.js";
-import Vector from "../utils/Vector.js";
 import Keyboard from "../utils/Keyboard.js";
 import Mouse from "../utils/Mouse.js";
-import Debug from "../entities/text/debug.js";
-import HexGrid from "../entities/HexGrid.js";
-import Square from "../entities/shapes/square.js";
 
 export default class Game {
 
@@ -40,57 +36,7 @@ export default class Game {
 
     init() {
         this.state.entities = [];
-
-        this.state.entities.push(
-            new Debug({
-                position: new Vector(10, 30),
-                label: "FPS",
-                callback: () => this.state.client.curFPS
-            })
-        );
-        this.state.entities.push(
-            new Debug({
-                position: new Vector(10, 50),
-                label: "Frames",
-                callback: () => this.state.client.frameCount
-            })
-        );
-        this.state.entities.push(
-            new Debug({
-                position: new Vector(10, 70),
-                label: "keysPressed",
-                callback: () => this.state.keyboard.toString()
-            })
-        );
-        this.state.entities.push(
-            new Debug({
-                position: new Vector(10, 90),
-                label: "mouse",
-                callback: () => this.state.mouse.toString()
-            })
-        );
-
-        // this.state.entities.push(
-        //     new HexGrid({
-        //         position: new Vector(25, 120),
-        //         cellRadius: 15,
-        //         columns: 12,
-        //         rows: 8,
-        //     })
-        // );
-
-        this.state.entities.push(
-            new Square({
-                position: new Vector(20, 20),
-                sides: 4,
-                r: 20,
-                θ: 90,
-            })
-        );
-
-
         this.frameid = window.requestAnimationFrame(this.gameTick.bind(this));
-
     }
 
     gameTick(timestamp) {
@@ -136,5 +82,9 @@ export default class Game {
         for (let entity of this.state.entities) {
             entity.draw(this.context);
         }
+    }
+
+    appendTo() {
+        // @TODO
     }
 }

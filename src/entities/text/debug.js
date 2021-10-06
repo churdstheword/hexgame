@@ -24,7 +24,7 @@ export default class Debug extends Entity {
     }
 
     draw(ctx) {
-        ctx.font = '16px Arial';
+        ctx.font = 'px Arial';
         ctx.fillStyle = 'black';
         ctx.fillText(this.toString(), this.position.x, this.position.y);
     }
