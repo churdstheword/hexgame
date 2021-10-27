@@ -19,8 +19,8 @@ export default class Polygon extends Entity {
         };
 
         Object.assign(this, defaults, Object.fromEntries(
-            Object.keys(defaults).filter(key => key in options).map(key => [key, options[key]]))
-        );
+            Object.keys(defaults).filter(key => key in options).map(key => [key, options[key]])
+        ));
     }
 
     getVertices(sides) {

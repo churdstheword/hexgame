@@ -30,6 +30,7 @@ import Triangle from './entities/shapes/triangle.js';
 import Debug from './entities/text/debug.js';
 import HexGrid from './entities/HexGrid.js';
 import HexCell from './entities/HexCell.js';
+import Animate from './entities/Animate.js';
 
 export const entities = {
     "entity": Entity,
@@ -44,6 +45,7 @@ export const entities = {
     },
     "HexGrid": HexGrid,
     "HexCell": HexCell,
+    "Animate": Animate,
 };
 
 /*

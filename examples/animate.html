@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <title>Hex Game</title>
+    <link rel="icon" href="/examples/favicon.ico">
+    <script defer="defer" src="../dist/hexgame.bundle.js"></script>
+</head>
+
+<body>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            
+            var game = new HexEngine.core.Game(800, 600, 60, document.querySelector('body'))
+            game.init();
+
+            game.state.entities.push(
+                new HexEngine.entities.Animate({})
+            );
+
+        });
+
+    </script>
+</body>
+
+</html>
