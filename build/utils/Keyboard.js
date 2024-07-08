@@ -1,10 +1,10 @@
-export default class Keyboard {
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+class Keyboard {
+    input;
     constructor() {
-
         window.addEventListener("keydown", (event) => this.handleKeyEvent(event, true), false);
         window.addEventListener("keyup", (event) => this.handleKeyEvent(event, false), false);
-
         this.input = {
             "UP": false,
             "DOWN": false,
@@ -12,13 +12,10 @@ export default class Keyboard {
             "RIGHT": false
         };
     }
-
     handleKeyEvent(event, pressed) {
-
         if (event.defaultPrevented) {
             return;
         }
-
         switch (event.key) {
             case "w":
             case "W":
@@ -26,37 +23,32 @@ export default class Keyboard {
             case "ArrowUp":
                 this.input.UP = pressed;
                 break;
-
             case "s":
             case "S":
             case "Down":
             case "ArrowDown":
                 this.input.DOWN = pressed;
                 break;
-
             case "a":
             case "A":
             case "Left":
             case "ArrowLeft":
                 this.input.LEFT = pressed;
                 break;
-
             case "d":
             case "D":
             case "Right":
             case "ArrowRight":
                 this.input.RIGHT = pressed;
                 break;
-
             default:
                 return;
         }
-
         // Cancel the default action to avoid it being handled twice
         event.preventDefault();
     }
-
     toString() {
         return JSON.stringify(this.input);
     }
 }
+exports.default = Keyboard;

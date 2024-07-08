@@ -10,16 +10,14 @@
 
 <body>
     <script>
-
         document.addEventListener('DOMContentLoaded', (event) => {
-            
             var game = new HexEngine.core.Game(800, 600, 60, document.querySelector('body'))
             game.init();
-
             game.state.entities.push(
-                new HexEngine.entities.Animate({})
+                new HexEngine.entities.Animate({
+                    position: new HexEngine.utils.Vector(20, 20),
+                })
             );
-
         });
 
     </script>

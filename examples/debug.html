@@ -20,28 +20,28 @@
                 new HexEngine.entities.text.Debug({
                     position: new HexEngine.utils.Vector(10, 30),
                     label: "FPS",
-                    callback: () => game.state.client.curFPS
+                    callback: (gameState, parent) => gameState.client.curFPS
                 })
             );
             game.state.entities.push(
                 new HexEngine.entities.text.Debug({
                     position: new HexEngine.utils.Vector(10, 50),
                     label: "Frames",
-                    callback: () => game.state.client.frameCount
+                    callback: (gameState, parent) => gameState.client.frameCount
                 })
             );
             game.state.entities.push(
                 new HexEngine.entities.text.Debug({
                     position: new HexEngine.utils.Vector(10, 70),
                     label: "keysPressed",
-                    callback: () => game.state.keyboard.toString()
+                    callback: (gameState, parent) => gameState.keyboard.toString()
                 })
             );
             game.state.entities.push(
                 new HexEngine.entities.text.Debug({
                     position: new HexEngine.utils.Vector(10, 90),
                     label: "mouse",
-                    callback: () => game.state.mouse.toString()
+                    callback: (gameState, parent) => gameState.mouse.toString()
                 })
             );
 

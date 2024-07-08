@@ -1,28 +1,30 @@
 import Vector from "../../utils/Vector";
 import Polygon from "./polygon";
+import type { GameState } from "../../core/Game"
+import Entity from "../Entity";
 
-/**
- * 
- */
+interface SquareOptions {
+    position: Vector
+    sides: number,
+    r: number,
+    θ: number,
+}
+
 export default class Square extends Polygon {
 
-    constructor(options) {
-        super(options);
+    sides: number;
 
-        const defaults = {
-            sides: 4,
-        };
+    constructor(options: SquareOptions) {
+        super({
+            position: options.position,
+            θ: options.θ,
+            r: options.r
+        });
 
-        Object.assign(this, defaults, Object.fromEntries(
-            Object.keys(defaults).filter(key => key in options).map(key => [key, options[key]])
-        ));
+        this.sides = 4;
     }
 
-    update(state) {
-
-
-        // this.θ = (this.θ - (Math.PI / 60)) % (2 * Math.PI);
-
+    public update(state: GameState, parent?: Entity) {
 
         const movements = [];
         let velocity = 1;
@@ -59,7 +61,7 @@ export default class Square extends Polygon {
 
     }
 
-    draw(ctx) {
+    public draw(ctx: CanvasRenderingContext2D) {
         ctx.beginPath();
         ctx.fillStyle = "#a1b2c3";
         for (let vertex of this.getVertices(this.sides)) {

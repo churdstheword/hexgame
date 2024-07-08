@@ -1,32 +1,45 @@
 import Entity from "./Entity";
-import Vector from "../utils/Vector.js";
-import HexMath from "../utils/Math.js";
+import Vector from "../utils/Vector";
+import HexMath from "../utils/Math";
+import Hex from "../utils/Hex";
+import type { GameState } from "../core/Game";
+
+interface HexCellOptions {
+    position: Vector,
+    hex: Hex,
+    radius: number,
+}
 
 export default class HexCell extends Entity {
-    constructor(options) {
-        super(options);
 
-        const defaults = {
-            hex: null,
-            radius: null,
-            center: new Vector(0, 0),
-            fillColor: "#FFFFFF",
-            selected: false,
-        };
+    public hex: Hex;
+    public radius: number;
+    public center: Vector;
+    public fillColor: string;
+    public selected: boolean;
+    public color: string;
+    public lastMouseButtonState: boolean;
 
-        Object.assign(this, defaults, Object.fromEntries(
-            Object.keys(defaults).filter(key => key in options).map(key => [key, options[key]])
-        ));
+    constructor(options: HexCellOptions) {
+        super({ position: options.position });
 
+        this.hex = options.hex;
+        this.radius = options.radius;
+        this.center = new Vector(0, 0);
+        this.fillColor = "#FFFFFF";
+        this.selected = false;
+        this.color = "#FFFFFF";
+        this.lastMouseButtonState = false;
     }
 
-    update(state, parent) {
+    public update(state: GameState, parent?: Entity) {
+
 
         if (state.client.frameCount % 5 == 0) {
             // Calculate the vector of the cell's center
             let x = this.radius * (Math.sqrt(3) * this.hex.q + (Math.sqrt(3) / 2) * this.hex.r);
             let y = this.radius * (3 / 2) * this.hex.r;
-            this.center = parent.position.add(new Vector(x, y));
+            this.center = parent!.position.add(new Vector(x, y));
         }
 
         // Determine if the mouse pointer is inside the cell, if so, color the cell
@@ -57,7 +70,7 @@ export default class HexCell extends Entity {
 
     }
 
-    draw(ctx) {
+    public draw(ctx: CanvasRenderingContext2D) {
         // Use the vertices to draw the hexagon
         ctx.beginPath();
         ctx.fillStyle = this.color;
@@ -69,7 +82,7 @@ export default class HexCell extends Entity {
         ctx.fill();
     }
 
-    getVertices(center) {
+    private getVertices(center: Vector) {
         let vertices = [];
         const baseVector = new Vector(this.radius, 0);
         for (var i = 0; i < 6; i++) {

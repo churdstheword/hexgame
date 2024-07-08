@@ -5,9 +5,12 @@ module.exports = {
     name: 'client',
     devtool: 'source-map',
     entry: {
-        app: './src/HexEngine.js'
+        app: './src/HexEngine'
     },
-    target: 'web',
+    target: ['web'],
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js', '.jsx'],
+    },
     output: {
         filename: "hexgame.bundle.js",
         path: path.resolve(__dirname, "dist"),
@@ -18,6 +21,13 @@ module.exports = {
     },
     mode: 'development',
     module: {
+        rules: [
+            {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            }
+        ]
     },
     plugins: [
         new webpack.DefinePlugin({

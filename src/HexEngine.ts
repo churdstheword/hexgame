@@ -4,15 +4,13 @@
 | Export Core Objects
 |--------------------------------------------------------------------------
 */
-import Game from './core/Game.js';
-import Events from './core/Events.js';
-import Scene from './core/Scene.js';
-import { Constants } from './core/Constants.js';
+import Game from './core/Game';
+import Events from './core/Events';
+import { Constants } from './core/Constants';
 
 export const core = {
     "Game": Game,
     "Events": Events,
-    "Scene": Scene,
     "constants": Constants,
 };
 
@@ -22,15 +20,15 @@ export const core = {
 | Export Entity Objects
 |--------------------------------------------------------------------------
 */
-import Entity from './entities/Entity.js';
-import Polygon from './entities/shapes/polygon.js';
-import Hexagon from './entities/shapes/hexagon.js';
-import Square from './entities/shapes/square.js';
-import Triangle from './entities/shapes/triangle.js';
-import Debug from './entities/text/debug.js';
-import HexGrid from './entities/HexGrid.js';
-import HexCell from './entities/HexCell.js';
-import Animate from './entities/Animate.js';
+import Entity from './entities/Entity';
+import Polygon from './entities/shapes/polygon';
+import Hexagon from './entities/shapes/hexagon';
+import Square from './entities/shapes/square';
+// import Triangle from './entities/shapes/triangle';
+import Debug from './entities/text/debug';
+import HexGrid from './entities/HexGrid';
+import HexCell from './entities/HexCell';
+import Animate from './entities/Animate';
 
 export const entities = {
     "entity": Entity,
@@ -38,7 +36,7 @@ export const entities = {
         "Polygon": Polygon,
         "Hexagon": Hexagon,
         "Square": Square,
-        "Triangle": Triangle,
+    //     "Triangle": Triangle,
     },
     "text": {
         "Debug": Debug,
@@ -53,11 +51,11 @@ export const entities = {
 | Export Utils Objects
 |--------------------------------------------------------------------------
 */
-import Canvas from './utils/Canvas.js';
-import Hex from './utils/Hex.js';
-import Mouse from './utils/Mouse.js';
-import Keyboard from './utils/Keyboard.js';
-import Vector from './utils/Vector.js';
+import Canvas from './utils/Canvas';
+import Hex from './utils/Hex';
+import Mouse from './utils/Mouse';
+import Keyboard from './utils/Keyboard';
+import Vector from './utils/Vector';
 
 export const utils = {
     "Canvas": Canvas,
